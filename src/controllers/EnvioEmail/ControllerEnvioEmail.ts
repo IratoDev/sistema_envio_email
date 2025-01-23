@@ -1,20 +1,23 @@
 import { Request, Response } from "express";
 import { EnvioEmailService } from "../../services/EnvioEmail/EnvioEmailService";
 
-class EnvioEmailController{
+class EnvioEmailController {
+  async handle(req: Request, res: Response) {
+  const { nome, arquivoPath, email } = req.body;
 
-async handle(req:Request, res:Response){
+  console.log('Dados recebidos:', { nome, arquivoPath, email });
 
-const {nome, arquivo} = req.body;
+  const envioEmailService = new EnvioEmailService();
 
-const envioEmailService = new EnvioEmailService();
-
-const envio = await envioEmailService.execute({nome, arquivo})
-
-return res.json(envio);
-
+  try {
+    const envio = await envioEmailService.execute({ nome, arquivoPath, email });
+    return res.json(envio);
+  } catch (error) {
+    console.error('Erro ao enviar e-mail:', error);
+    return res.status(500).json({ error: 'Erro ao enviar e-mail.' });
+  }
 }
 
 }
 
-export {EnvioEmailController}
+export { EnvioEmailController };

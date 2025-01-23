@@ -1,0 +1,44 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Client {
+  id             String    @id @default(uuid())
+  name           String
+  email          String?
+  status_email   Boolean
+  type           String    @default("novo")
+  numero_maquina Decimal
+  fiscal         String
+  create_at      DateTime? @default(now())
+  updated_at     DateTime? @default(now())
+  sistem_id      String
+  obs            String?   @db.VarChar(255)
+  sistem         Sistem    @relation(fields: [sistem_id], references: [id])
+
+  @@map("client")
+}
+
+model Sistem {
+  id     String   @id @default(uuid())
+  name   String
+  client Client[]
+
+  @@map("sistem")
+}
+
+model erros {
+  id      String  @id @default(dbgenerated("nextval('erros_id_seq'::regclass)"))
+  imagem  String? @db.VarChar(255)
+  nome    String  @db.VarChar(255)
+  causa   String?
+  solucao String?
+}
+
+//npx prisma db pull
+//npx prisma generate

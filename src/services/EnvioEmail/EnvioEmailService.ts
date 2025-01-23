@@ -1,98 +1,41 @@
+import fs from 'fs'; // Importe o módulo fs
+import path from 'path';
+import nodemailer from 'nodemailer';
+import 'dotenv/config'
 
-interface EnvioResquest{
-
-nome:string;
-arquivo:string
-  
+interface EnvioRequest {
+  nome: string;
+  email: string;
+  arquivoPath: string; // Altera de arquivo: File para arquivoPath: string
 }
 
-class EnvioEmailService{
+class EnvioEmailService {
+  async execute({ nome, email, arquivoPath }: EnvioRequest) {
+    // Verifica se o arquivo existe
+    if (!fs.existsSync(arquivoPath)) {
+      console.error('Arquivo não encontrado:', arquivoPath);
+      throw new Error('Arquivo não encontrado.'); // Lança um erro se o arquivo não existir
+    }
 
-async execute({nome,arquivo}:EnvioResquest){
-const nodemailer = require('nodemailer');
+    const DataAtual = new Date();
+    const Mes = DataAtual.getMonth();
+    const Ano = DataAtual.getFullYear();
 
-const Clientes = [
+    const NomeMes = () => {
+      const meses = [
+        "Janeiro", "Fevereiro", "Março", "Abril", "Maio",
+        "Junho", "Julho", "Agosto", "Setembro", "Outubro",
+        "Novembro", "Dezembro"
+      ];
 
-{nome:"teste1",email:"email.exemplo@.com",status:false},
-{nome:"teste2",email:"email.exemplo@.com",status:false},
-  
-];
+      
 
-const DataAtual = new Date();
-const Mes = DataAtual.getMonth();
-const Ano = DataAtual.getFullYear();
-  
-const NomeMes = async ()=>{
-    
- switch(Mes){
+      return meses[Mes-1] || "Dezembro";
+    };
 
-  case 0:
-  return "Janeiro" ;
-  break;
-  case 1:
-  return "Fevereiro" ;
-  break;
-  case 2:
-  return "Março" ;
-  break;
-  case 3:
-  return "Abril" ;
-  break;
-  case 4:
-  return "Maio" ;
-  break;
-  
-  case 5:
-  return "Junho" ;
-  break;
-  case 6:
-  return "Julho" ;
-  break;
-  case 7:
-  return "Agosto" ;
-  break;
-  case 8:
-  return "Setembro" ;
-  break;
-  case 9:
-  return "Outubro" ;
-  break;
-  case 10:
-  return "Novembro" ;
-  break;
-  
-  case 11:
-  return "Dezembro" ;
-  break;
-  default:
-  console.log("Mês inválido");
-  break;
-  }
+    const Mensagem = `Boa Tarde,
 
-};
-
-const ClienteSolicitado = async ()=>{
-
-const cliente = Clientes.find(cliente => cliente.nome === nome);
-
-if(cliente){
-
-return cliente
-
-}else{
-
-console.log("erro ao verificar cliente")
-return null;
-
-}
-
-
-}
-
-//mensagem padrão
-const Mensagem = `Boa Tarde,
-
-Segue o Arquivo XML Referente ao mês de ${await NomeMes()} de ${Ano}.
+Segue o Arquivo XML Referente ao mês de ${NomeMes()} de ${Ano}.
 Qualquer dúvida estou à disposição.
 
 Obrigado!
@@ -102,50 +45,34 @@ Atenção,
 Marcello Félix
 43 99146.5959`;
 
-  // Configuração do transportador (transporter) de e-mail
-  const transporter = nodemailer.createTransport({
-    service: 'gmail',
-    auth: {
-      user: '', // e-mail
-      pass: '' // senha do e-mail
-    }
-  });
+console.log('Caminho do arquivo:', arquivoPath);
 
-  
-  // Função para enviar e-mail
-  const enviarEmail = async () => {
-
-  const Destinatario = await ClienteSolicitado();
-
-  if (!Destinatario) {
-    console.error("Destinatário não encontrado.");
-    return;
-  }
+    const transporter = nodemailer.createTransport({
+      service: 'gmail',
+      auth: {
+        user: process.env.emailUser,
+        pass:  process.env.senhaEmail
+      }
+    });
 
     try {
-
-      // Configuração do e-mail
       const info = await transporter.sendMail({
-
-        from: '"Seu Nome" <seu email>', // Remetente
-        to: Destinatario.email, // Destinatário
-        subject: `XML | ${Destinatario.nome} | ${await NomeMes()} DE ${Ano}`, // Assunto
-        text: Mensagem, // Texto simples
+        from: '"ClickCerto" <process.env.emailUser>',
+        to: email,
+        subject: `XML | ${nome} | ${NomeMes()} DE ${Ano}`,
+        text: Mensagem,
+        attachments: [{
+          filename: path.basename(arquivoPath), // Usar apenas o nome do arquivo
+          path: arquivoPath // Aqui, você usa o caminho do arquivo diretamente
+        }]
       });
-  
+
       console.log('E-mail enviado com sucesso:', info.messageId);
     } catch (error) {
       console.error('Erro ao enviar e-mail:', error);
+      throw new Error("Erro ao enviar e-mail."); // Lança o erro para ser tratado na chamada da função
     }
-  };
-
-
-return enviarEmail();
-
+  }
 }
 
-}
-
-export {EnvioEmailService}
-
-
+export { EnvioEmailService };

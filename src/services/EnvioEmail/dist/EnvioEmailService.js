@@ -37,133 +37,67 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
 };
 exports.__esModule = true;
 exports.EnvioEmailService = void 0;
+var fs_1 = require("fs"); // Importe o módulo fs
+var path_1 = require("path");
+var nodemailer_1 = require("nodemailer");
+require("dotenv/config");
 var EnvioEmailService = /** @class */ (function () {
     function EnvioEmailService() {
     }
     EnvioEmailService.prototype.execute = function (_a) {
-        var nome = _a.nome, arquivo = _a.arquivo;
+        var nome = _a.nome, email = _a.email, arquivoPath = _a.arquivoPath;
         return __awaiter(this, void 0, void 0, function () {
-            var nodemailer, Clientes, DataAtual, Mes, Ano, NomeMes, ClienteSolicitado, Mensagem, _b, transporter, enviarEmail;
-            var _this = this;
-            return __generator(this, function (_c) {
-                switch (_c.label) {
+            var DataAtual, Mes, Ano, NomeMes, Mensagem, transporter, info, error_1;
+            return __generator(this, function (_b) {
+                switch (_b.label) {
                     case 0:
-                        nodemailer = require('nodemailer');
-                        Clientes = [
-                            { nome: "teste1", email: "email.exemplo@.com", status: false },
-                            { nome: "teste2", email: "email.exemplo@.com", status: false },
-                        ];
+                        // Verifica se o arquivo existe
+                        if (!fs_1["default"].existsSync(arquivoPath)) {
+                            console.error('Arquivo não encontrado:', arquivoPath);
+                            throw new Error('Arquivo não encontrado.'); // Lança um erro se o arquivo não existir
+                        }
                         DataAtual = new Date();
                         Mes = DataAtual.getMonth();
                         Ano = DataAtual.getFullYear();
-                        NomeMes = function () { return __awaiter(_this, void 0, void 0, function () {
-                            return __generator(this, function (_a) {
-                                switch (Mes) {
-                                    case 0:
-                                        return [2 /*return*/, "Janeiro"];
-                                        break;
-                                    case 1:
-                                        return [2 /*return*/, "Fevereiro"];
-                                        break;
-                                    case 2:
-                                        return [2 /*return*/, "Março"];
-                                        break;
-                                    case 3:
-                                        return [2 /*return*/, "Abril"];
-                                        break;
-                                    case 4:
-                                        return [2 /*return*/, "Maio"];
-                                        break;
-                                    case 5:
-                                        return [2 /*return*/, "Junho"];
-                                        break;
-                                    case 6:
-                                        return [2 /*return*/, "Julho"];
-                                        break;
-                                    case 7:
-                                        return [2 /*return*/, "Agosto"];
-                                        break;
-                                    case 8:
-                                        return [2 /*return*/, "Setembro"];
-                                        break;
-                                    case 9:
-                                        return [2 /*return*/, "Outubro"];
-                                        break;
-                                    case 10:
-                                        return [2 /*return*/, "Novembro"];
-                                        break;
-                                    case 11:
-                                        return [2 /*return*/, "Dezembro"];
-                                        break;
-                                    default:
-                                        console.log("Mês inválido");
-                                        break;
-                                }
-                                return [2 /*return*/];
-                            });
-                        }); };
-                        ClienteSolicitado = function () { return __awaiter(_this, void 0, void 0, function () {
-                            var cliente;
-                            return __generator(this, function (_a) {
-                                cliente = Clientes.find(function (cliente) { return cliente.nome === nome; });
-                                if (cliente) {
-                                    return [2 /*return*/, cliente];
-                                }
-                                else {
-                                    console.log("erro ao verificar cliente");
-                                    return [2 /*return*/, null];
-                                }
-                                return [2 /*return*/];
-                            });
-                        }); };
-                        _b = "Boa Tarde,\n\nSegue o Arquivo XML Referente ao m\u00EAs de ";
-                        return [4 /*yield*/, NomeMes()];
-                    case 1:
-                        Mensagem = _b + (_c.sent()) + " de " + Ano + ".\nQualquer d\u00FAvida estou \u00E0 disposi\u00E7\u00E3o.\n\nObrigado!\n\nAten\u00E7\u00E3o,\n\nMarcello F\u00E9lix\n43 99146.5959";
-                        transporter = nodemailer.createTransport({
+                        NomeMes = function () {
+                            var meses = [
+                                "Janeiro", "Fevereiro", "Março", "Abril", "Maio",
+                                "Junho", "Julho", "Agosto", "Setembro", "Outubro",
+                                "Novembro", "Dezembro"
+                            ];
+                            return meses[Mes - 1] || "Dezembro";
+                        };
+                        Mensagem = "Boa Tarde,\n\nSegue o Arquivo XML Referente ao m\u00EAs de " + NomeMes() + " de " + Ano + ".\nQualquer d\u00FAvida estou \u00E0 disposi\u00E7\u00E3o.\n\nObrigado!\n\nAten\u00E7\u00E3o,\n\nMarcello F\u00E9lix\n43 99146.5959";
+                        console.log('Caminho do arquivo:', arquivoPath);
+                        transporter = nodemailer_1["default"].createTransport({
                             service: 'gmail',
                             auth: {
-                                user: '',
-                                pass: '' // senha do e-mail
+                                user: process.env.emailUser,
+                                pass: process.env.senhaEmail
                             }
                         });
-                        enviarEmail = function () { return __awaiter(_this, void 0, void 0, function () {
-                            var Destinatario, info, _a, _b, _c, _d, error_1;
-                            return __generator(this, function (_e) {
-                                switch (_e.label) {
-                                    case 0: return [4 /*yield*/, ClienteSolicitado()];
-                                    case 1:
-                                        Destinatario = _e.sent();
-                                        if (!Destinatario) {
-                                            console.error("Destinatário não encontrado.");
-                                            return [2 /*return*/];
-                                        }
-                                        _e.label = 2;
-                                    case 2:
-                                        _e.trys.push([2, 5, , 6]);
-                                        _b = (_a = transporter).sendMail;
-                                        _c = {
-                                            from: '"Seu Nome" <seu email>',
-                                            to: Destinatario.email
-                                        };
-                                        _d = "XML | " + Destinatario.nome + " | ";
-                                        return [4 /*yield*/, NomeMes()];
-                                    case 3: return [4 /*yield*/, _b.apply(_a, [(_c.subject = _d + (_e.sent()) + " DE " + Ano,
-                                                _c.text = Mensagem,
-                                                _c)])];
-                                    case 4:
-                                        info = _e.sent();
-                                        console.log('E-mail enviado com sucesso:', info.messageId);
-                                        return [3 /*break*/, 6];
-                                    case 5:
-                                        error_1 = _e.sent();
-                                        console.error('Erro ao enviar e-mail:', error_1);
-                                        return [3 /*break*/, 6];
-                                    case 6: return [2 /*return*/];
-                                }
-                            });
-                        }); };
-                        return [2 /*return*/, enviarEmail()];
+                        _b.label = 1;
+                    case 1:
+                        _b.trys.push([1, 3, , 4]);
+                        return [4 /*yield*/, transporter.sendMail({
+                                from: '"ClickCerto" <process.env.emailUser>',
+                                to: email,
+                                subject: "XML | " + nome + " | " + NomeMes() + " DE " + Ano,
+                                text: Mensagem,
+                                attachments: [{
+                                        filename: path_1["default"].basename(arquivoPath),
+                                        path: arquivoPath // Aqui, você usa o caminho do arquivo diretamente
+                                    }]
+                            })];
+                    case 2:
+                        info = _b.sent();
+                        console.log('E-mail enviado com sucesso:', info.messageId);
+                        return [3 /*break*/, 4];
+                    case 3:
+                        error_1 = _b.sent();
+                        console.error('Erro ao enviar e-mail:', error_1);
+                        throw new Error("Erro ao enviar e-mail."); // Lança o erro para ser tratado na chamada da função
+                    case 4: return [2 /*return*/];
                 }
             });
         });
