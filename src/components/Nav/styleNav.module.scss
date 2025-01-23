@@ -1,0 +1,90 @@
+
+// Variáveis de cor (opcional)
+$primary-color: #333;
+$secondary-color: #555;
+$button-color: #fff;
+$button-hover-color: darken($button-color, 10%);
+$background-color: #2b2a2a33;
+
+header{
+
+position: fixed;
+left: 0;
+
+width: 100px;
+height: 100vh;
+background-color: $background-color;
+
+// Container principal da Navbar
+#ConteinerNav {
+position: relative;
+display: flex;
+flex-direction: column;
+justify-content: center;
+align-items: center;
+padding: 1em 40px;
+box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+
+// Logo
+.BoxLogo {
+
+padding: 0 20px;
+margin: 0 -20px;
+
+img{
+
+width: 100px;
+height: auto;
+
+}
+
+}
+
+// Container dos botões da Navbar
+.ConteinerButton {
+display: flex;
+align-items: center;
+margin-top: 3em;
+
+// Box do botão
+.BoxButton {
+display: flex;
+flex-direction: column;
+align-items: center;
+
+button {
+background: none;
+border: none;
+font-size: 1.25rem;
+color: $button-color;
+cursor: pointer;
+padding: 0.5rem;
+transition: color 0.3s;
+
+&:hover {
+  color: $button-hover-color;
+}
+
+&:focus {
+  outline: 2px solid $button-hover-color;
+}
+
+.dropdownMenu{
+width: 100%;
+
+button{
+font-size: 0.8em;
+}
+
+}
+
+}
+}
+
+}
+
+}
+
+
+}
+

@@ -1,0 +1,39 @@
+* {
+  padding: 0;
+  margin: 0;
+  text-decoration: none;
+  font-style: none;
+}
+
+:root {
+  --corPrimaria: #010c2e;
+  --corSecundaria: #FF7F11;
+  --corTerciaria: #3af102;
+}
+
+::-webkit-scrollbar {
+  width: 12px;
+}
+
+::-webkit-scrollbar-track {
+  background: #f0f0f0; /* Cor do fundo do trilho */
+  border-radius: 10px; /* Bordas arredondadas */
+  margin: 0.5em 0;
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--corTerciaria); /* Cor do polegar */
+  border-radius: 10px; /* Bordas arredondadas */
+}
+
+body {
+  background-color: var(--corPrimaria);
+  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none;
+}
+
+main {
+  padding: 0 3em;
+  height: 100vh;
+  overflow-y: scroll;
+}/*# sourceMappingURL=GlobalStyle.css.map */

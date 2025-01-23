@@ -1,0 +1,29 @@
+@charset "UTF-8";
+/* Centraliza o spinner na tela */
+.spinnerContainer {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  width: 100% !important;
+}
+
+/* Spinner circular */
+.spinner {
+  width: 50px;
+  height: 50px;
+  border: 6px solid #ccc; /* Borda externa */
+  border-top: 6px solid #0078d7; /* Borda superior com cor */
+  border-radius: 50%; /* Forma circular */
+  animation: spin 1s linear infinite; /* Animação */
+}
+
+/* Animação de rotação */
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}/*# sourceMappingURL=styleCarregamento.module.css.map */
